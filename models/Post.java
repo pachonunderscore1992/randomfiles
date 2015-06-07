@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Post extends Mappable {
@@ -13,15 +15,19 @@ public class Post extends Mappable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     private String title;
-    
+
     private Date date;
-    
+
     private String content;
-    
+
     private Integer likes;
-    
+
+    @ManyToOne
+    @JoinColumn(name = "topic_id", nullable = false)
+    private Topic topic;
+
     public Post() {
         likes = 0;
         date = new Date();
@@ -41,6 +47,14 @@ public class Post extends Mappable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Topic getTopic() {
+        return topic;
+    }
+
+    public void setTopic(Topic topic) {
+        this.topic = topic;
     }
 
     public Date getDate() {

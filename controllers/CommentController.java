@@ -5,8 +5,7 @@ import java.util.Map;
 
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.fabriquita.nucleus.models.Comment;
-import org.fabriquita.nucleus.models.Post;
-import org.fabriquita.nucleus.services.PostService;
+import org.fabriquita.nucleus.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,70 +15,53 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/post")
-public class PostController {
+@RequestMapping(value = "/comment")
+public class CommentController {
+
     @Autowired
-    PostService postService;
+    CommentService commentService;
 
     @RequiresAuthentication
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Post> list() {
-        return postService.list();
+    public List<Comment> list() {
+        return commentService.list();
     }
 
     @RequiresAuthentication
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Post get(@PathVariable(value = "id") Long id) {
-        return postService.get(id);
-    }
-
-    @RequiresAuthentication
-    @RequestMapping(value = "/{id}/comments", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Comment> getComments(@PathVariable(value = "id") Long id) {
-        return postService.getComments(id);
+    public Comment get(@PathVariable(value = "id") Long id) {
+        return commentService.get(id);
     }
 
     @RequiresAuthentication
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Post add(@RequestBody Map<String, Object> data) {
-        String title = null;
+    public Comment add(@RequestBody Map<String, Object> data) {
         String content = null;
-        Long topicId = null;
-        if (data.get("title") != null) {
-            title = (String) data.get("title");
-        }
+        Long postId = null;
         if (data.get("content") != null) {
             content = (String) data.get("content");
         }
-        if (data.get("topic_id") != null) {
-            topicId = new Long(data.get("topic_id").toString());
+        if (data.get("post_id") != null) {
+            postId = new Long(data.get("post_id").toString());
         }
-        return postService.add(topicId, title, content);
+        return commentService.add(postId, content);
     }
 
     @RequiresAuthentication
     @RequestMapping(value = "/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Post update(@PathVariable(value = "id") Long id,
+    public Comment update(@PathVariable(value = "id") Long id,
             @RequestBody Map<String, Object> data) {
-        String title = null;
         String content = null;
-        Integer likes = null;
-        if (data.get("title") != null) {
-            title = (String) data.get("title");
-        }
         if (data.get("content") != null) {
             content = (String) data.get("content");
         }
-        if (data.get("likes") != null) {
-            likes = new Integer(data.get("likes").toString());
-        }
-        return postService.update(id, title, content, likes);
+        return commentService.update(id, content);
     }
 
     @RequiresAuthentication
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable(value = "id") Long id) {
-        postService.delete(id);
+        commentService.delete(id);
     }
 
 }

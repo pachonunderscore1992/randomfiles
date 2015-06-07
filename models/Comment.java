@@ -6,21 +6,27 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
-public class Event extends Mappable {
+public class Comment extends Mappable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String title;
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
-    private String description;
+    private String content;
 
     private Date date;
 
-    private String place;
+    public Comment() {
+        date = new Date();
+    }
 
     public Long getId() {
         return id;
@@ -30,20 +36,12 @@ public class Event extends Mappable {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getContent() {
+        return content;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public Date getDate() {
@@ -54,12 +52,12 @@ public class Event extends Mappable {
         this.date = date;
     }
 
-    public String getPlace() {
-        return place;
+    public Post getPost() {
+        return post;
     }
 
-    public void setPlace(String place) {
-        this.place = place;
+    public void setPost(Post post) {
+        this.post = post;
     }
 
     @Override
